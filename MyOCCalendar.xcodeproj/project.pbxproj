@@ -426,7 +426,7 @@
 				INFOPLIST_FILE = MyOCCalendar/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = izhaohu.MyOCCalendar;
+				PRODUCT_BUNDLE_IDENTIFIER = Zilu.ma.MyOCCalendar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -438,7 +438,7 @@
 				INFOPLIST_FILE = MyOCCalendar/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = izhaohu.MyOCCalendar;
+				PRODUCT_BUNDLE_IDENTIFIER = Zilu.ma.MyOCCalendar;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -508,6 +508,7 @@
 				D78167671D2CFA4400410A82 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D78167681D2CFA4400410A82 /* Build configuration list for PBXNativeTarget "MyOCCalendarTests" */ = {
 			isa = XCConfigurationList;
@@ -516,6 +517,7 @@
 				D781676A1D2CFA4400410A82 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		D781676B1D2CFA4400410A82 /* Build configuration list for PBXNativeTarget "MyOCCalendarUITests" */ = {
 			isa = XCConfigurationList;
@@ -524,6 +526,7 @@
 				D781676D1D2CFA4400410A82 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
