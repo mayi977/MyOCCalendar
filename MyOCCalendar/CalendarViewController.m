@@ -25,6 +25,10 @@
     screenHeight = [UIScreen mainScreen].bounds.size.height - 64;
     _showArray = [[NSMutableArray alloc] init];
     _allDataArr = [[NSMutableArray alloc] init];
+    for (int i = 0; i < 12; i ++) {
+        NSDictionary *dic = [NSDictionary dictionaryWithObject:@"12345" forKey:[NSString stringWithFormat:@"13"]];
+        [_allDataArr addObject:dic];
+    }
     
     [self addWeekView];
     [self nowDate];
@@ -32,6 +36,7 @@
     [self addSmallCalendarView];
 }
 
+//这个界面的背景
 - (void)addBackgroundScrollView{
     
     _bgScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0,64+40,screenWidth,screenHeight)];
@@ -64,6 +69,7 @@
     }
 }
 
+//日历的背景
 - (void)addCalendarBackgroundScrollView{
     
     _calendarSV = [[UIScrollView alloc]initWithFrame:CGRectMake(0,0,screenWidth,(screenWidth)/7*6)];
@@ -81,6 +87,7 @@
     [self addNextMouthCollectionView];
 }
 
+//刷新所有的日历(可在此优化)
 - (void)reloadAllDate{
     
     [_currentMonthCV reloadData];
@@ -89,6 +96,7 @@
     [_smallCalendar reloadData];
 }
 
+//初始化当前显示月的日历
 - (void)addCurrentMouthCollectionView{
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
@@ -105,6 +113,7 @@
     [_calendarSV addSubview:_currentMonthCV];
 }
 
+//初始化上月的日历
 - (void)addLastMouthCollectionView{
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
@@ -121,6 +130,7 @@
     [_calendarSV addSubview:_lastMonthCV];
 }
 
+//初始化下月的日历
 - (void)addNextMouthCollectionView{
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
@@ -137,6 +147,7 @@
     [_calendarSV addSubview:_nextMonthCV];
 }
 
+//初始化周日历
 - (void)addSmallCalendarView{
     
     [self getSmallDayArray];
@@ -158,6 +169,7 @@
     [self.view addSubview:_smallCalendar];
 }
 
+//处理展示周日历时的坐标
 - (void)showSmallCalendar{
     
     CGRect rect = _smallCalendar.frame;
@@ -174,6 +186,7 @@
     _arrowImg.image = [UIImage imageNamed:@"slide down icon"];
 }
 
+//处理隐藏周日历时的坐标
 - (void)hideSmallCalendar{
     
     CGRect rect = _smallCalendar.frame;
@@ -186,6 +199,7 @@
     _arrowImg.image = [UIImage imageNamed:@"slide up icon"];
 }
 
+//周日历固定21天,月日历统一42天(根据实际的天数显示)
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
     
     if (collectionView == _smallCalendar) {
@@ -195,6 +209,7 @@
     }
 }
 
+//加载日历的日期
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     
     UICollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
@@ -216,6 +231,8 @@
     return cell;
 }
 
+//处理选中日期,
+//当前为周日历,并且周日历显示两个月份的日期时(6月,7月),若由6月的日期选到7月的日期,在刷新界面的时候,同时需要将相应的月份更改掉;也许在此做处理.
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     NSString *dayString = nil;
@@ -259,24 +276,7 @@
     [_currentMonthCV reloadData];
 }
 
-- (void)reloadFirstDayDate{
-    
-    NSString *dayStr;
-    if (_currentMonth < 10) {
-        if (_selectDay < 10) {
-            dayStr = [NSString stringWithFormat:@"0%d-0%d",_currentMonth,_selectDay];
-        }else{
-            dayStr = [NSString stringWithFormat:@"0%d-%d",_currentMonth,_selectDay];
-        }
-    }else{
-        if (_selectDay < 10) {
-            dayStr = [NSString stringWithFormat:@"%d-0%d",_currentMonth,_selectDay];
-        }else{
-            dayStr = [NSString stringWithFormat:@"%d-%d",_currentMonth,_selectDay];
-        }
-    }
-}
-
+//左右切换月份
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     
     //    NSLog(@"%s",__func__);
@@ -296,7 +296,8 @@
         point.x = screenWidth;
         _calendarSV.contentOffset = point;
         
-        [_allDataArr removeAllObjects];
+        //若每次改变月份都要请求新的数据,就在此将旧数据删掉
+//        [_allDataArr removeAllObjects];
     }
     
     NSString *dayString = nil;
@@ -312,7 +313,8 @@
                 int year = _currentYear;
                 int month = _currentMonth;
                 [self getDateWithYear:year WithMonth:month-1];
-                [_allDataArr removeAllObjects];
+                 //若每次改变月份都要请求新的数据,就在此将旧数据删掉
+//                [_allDataArr removeAllObjects];
                 _selectItem = _selectItem+(_currentWeek-1);
             }
         }
@@ -328,7 +330,8 @@
                 int year = _currentYear;
                 int month = _currentMonth;
                 [self getDateWithYear:year WithMonth:month+1];
-                [_allDataArr removeAllObjects];
+                 //若每次改变月份都要请求新的数据,就在此将旧数据删掉
+//                [_allDataArr removeAllObjects];
                 _selectItem = _selectItem+(_currentWeek-1);
             }
         }
@@ -347,6 +350,7 @@
     }
 }
 
+//隐藏或显示周日历
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
     
     if (scrollView == _bgScrollView) {
@@ -358,6 +362,7 @@
     }
 }
 
+//显示周日历的日期
 - (void)LabelWithView:(UIView *)view WithIndex:(NSInteger)index{
     
     UILabel *lab = [[UILabel alloc] initWithFrame:view.bounds];
@@ -370,17 +375,37 @@
     
     int month = [[array firstObject] intValue];
     int day = [[array lastObject] intValue];
-    if (month == _nowMonth && day == _nowDay) {
-        lab.layer.cornerRadius = (lab.bounds.size.width)/2;
-        lab.layer.borderWidth = 1;
-        lab.layer.borderColor = [UIColor redColor].CGColor;
-        lab.layer.backgroundColor = [UIColor clearColor].CGColor;
-    }
+    
+    UIColor *lastColor = [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:.8];
+    UIColor *nextColor = [UIColor blackColor];
+    //选择哪一天
     if (day == _selectDay) {
-        lab.layer.cornerRadius = (lab.bounds.size.width)/2;
+        lab.layer.cornerRadius = 20;
         lab.layer.backgroundColor = [UIColor orangeColor].CGColor;
+        lab.textColor = [UIColor whiteColor];
+    }else{
+        //判断昨天今天明天
+        if (_nowYear < _currentYear) {
+            lab.textColor = nextColor;
+        }else if (_nowYear == _currentYear){
+            if (_nowMonth < month) {
+                lab.textColor = nextColor;
+            }else if (_nowMonth == month){
+                if (day > _nowDay) {
+                    lab.textColor = nextColor;
+                }else if (day == _nowDay){
+                    lab.textColor = [UIColor redColor];
+                }else{
+                    lab.textColor = lastColor;
+                }
+            }else{
+                lab.textColor = lastColor;
+            }
+        }else{
+            lab.textColor = lastColor;
+        }
     }
-    lab.textColor = [UIColor blackColor];
+    
     for (NSDictionary *dic in _allDataArr) {
         NSString *key = [[dic allKeys] firstObject];
         if ([key isEqualToString:string]) {
@@ -390,6 +415,7 @@
     [view addSubview:lab];
 }
 
+//显示月日历的日期,包括添加标记
 - (void)addCellLabelWithView:(UIView *)view WithIndex:(NSInteger)index WithDayArr:(NSMutableArray *)dayArr WithWeek:(int)week{
     
     if (index >= week-1 && index <= dayArr.count-1+week-1){
@@ -401,21 +427,42 @@
         lab.textAlignment = 1;
         lab.tag = 10;
         lab.font = [UIFont boldSystemFontOfSize:24];
-        if (_nowYear == _currentYear && _nowMonth == _currentMonth && index == _nowDay + week - 2){
-            lab.layer.cornerRadius = (lab.bounds.size.width)/2;
-            lab.layer.borderWidth = 1;
-            lab.layer.borderColor = [UIColor redColor].CGColor;
-            lab.layer.backgroundColor = [UIColor clearColor].CGColor;
-        }
+        
+        //选择的日期
         if (day == _selectDay && dayArr == _currentMonthArr) {
             lab.layer.cornerRadius = (lab.bounds.size.width)/2;
             lab.layer.backgroundColor = [UIColor orangeColor].CGColor;
-            
+            lab.textColor = [UIColor whiteColor];
+        }else{
+            UIColor *lastColor = [UIColor colorWithRed:.5 green:.5 blue:.5 alpha:.8];
+            UIColor *nextColor = [UIColor blackColor];
+            //在此判断昨天今天明天
+            if (_nowYear < _currentYear) {
+                lab.textColor = nextColor;
+            }else if (_nowYear == _currentYear){
+                if (_nowMonth < _currentMonth) {
+                    lab.textColor = nextColor;
+                }else if (_nowMonth == _currentMonth){
+                    if (index > _nowDay + week - 2) {
+                        lab.textColor = nextColor;
+                    }else if (index == _nowDay + week - 2){
+                        lab.textColor = [UIColor redColor];
+                    }else{
+                        lab.textColor = lastColor;
+                    }
+                }else{
+                    lab.textColor = lastColor;
+                }
+            }else{
+                lab.textColor = lastColor;
+            }
+
         }
-        lab.textColor = [UIColor blackColor];
+        
+        //在此遍历数据,有的话就进行标记
         for (NSDictionary *dic in _allDataArr) {
             NSString *key = [[dic allKeys] firstObject];
-            if ([key isEqualToString:string]) {
+            if ([key isEqualToString:[string componentsSeparatedByString:@"-"].lastObject]) {
                 [self addCellPointWithView:lab];
             }
         }
@@ -423,16 +470,19 @@
     }
 }
 
+
+//在日期下面添加点作为标记
 - (void)addCellPointWithView:(UIView *)view{
     
     CALayer *layer=[CALayer layer];
     layer.bounds = CGRectMake(0, 0, 5, 5);
     layer.cornerRadius = 5/2;
     layer.position = CGPointMake(((screenWidth)/7)/2, (screenWidth)/7-5);
-    layer.backgroundColor = [UIColor colorWithRed:243/255.0 green:152/255.0 blue:0 alpha:1].CGColor;
+    layer.backgroundColor = [UIColor redColor].CGColor;
     [view.layer addSublayer:layer];
 }
 
+//计算相应的年份
 - (int)getYearWithYear:(int)year WithMonth:(int)month{
     
     if (month <= 0) {
@@ -444,6 +494,7 @@
     return year;
 }
 
+//计算相应的月份
 - (int)getMonthWithMonth:(int)month{
     
     if (month <= 0) {
@@ -454,6 +505,8 @@
     
     return month;
 }
+
+//根据日期得到相应的星期
 - (int)getWeekWithYear:(int)year WihtMonth:(int)month WithDay:(int)day{
     
     NSDateComponents *comps = [[NSDateComponents alloc] init];
@@ -470,6 +523,7 @@
     return week;
 }
 
+//计算某年某月的日期
 - (NSMutableArray *)getDayArrayWithYear:(int)year WithMonth:(int)month{
     
     NSCalendar *calendar = [[NSCalendar alloc]
@@ -499,6 +553,7 @@
     return dayArray;
 }
 
+//计算当前的日期
 - (void)nowDate{
     
     NSDate *now = [NSDate date];
@@ -519,6 +574,7 @@
     _selectItem = _nowDay + _currentWeek-2;
 }
 
+//每次刷新界面时都需要计算年月日星期
 - (void)getDateWithYear:(int)year WithMonth:(int)month{
     
     _currentYear = [self getYearWithYear:year WithMonth:month];
@@ -538,42 +594,7 @@
     _nextMonthArr = [self getDayArrayWithYear:_nextYear WithMonth:_nextMonth];
 }
 
-- (void)addServiceTitleViewWithOriginY:(CGFloat)origin{
-    
-    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, origin, screenWidth, 80)];
-    view.backgroundColor = [UIColor whiteColor];
-    
-    _arrowImg = [[UIImageView alloc] initWithFrame:CGRectMake(screenWidth/2-39/2, (40-16)/2, 39, 16)];
-    _arrowImg.image = [UIImage imageNamed:@"slide up icon"];
-    [view addSubview:_arrowImg];
-    
-    UILabel *lab = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, screenWidth, 40)];
-    lab.textColor = [UIColor colorWithRed:76/255.0 green:134/255.0 blue:0 alpha:1];
-    lab.font = [UIFont systemFontOfSize:24];
-    lab.textAlignment = 1;
-    lab.text = @"服务项目详情";
-    [view addSubview:lab];
-    [_bgScrollView addSubview:view];
-}
-
-- (NSString *)getTimeWithBeginTime:(long long)beginTime WithEndTime:(long long)endTime{
-    
-    NSString *time;
-    if (beginTime == 0 || endTime == 0) {
-        time = @"";
-    }else{
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateFormat:@"HH:mm"];
-        NSDate *begin = [NSDate dateWithTimeIntervalSince1970:beginTime/1000];
-        NSDate *end = [NSDate dateWithTimeIntervalSince1970:endTime/1000];
-        NSString *time1 = [formatter stringFromDate:begin];
-        NSString *time2 = [formatter stringFromDate:end];
-        time = [NSString stringWithFormat:@"%@ - %@",time1,time2];
-    }
-    
-    return time;
-}
-
+//通过当前三个月的日期,计算出周日历的日期(每次计算三周)
 - (void)getSmallDayArray{
     
     if (_allDayArr == nil) {
